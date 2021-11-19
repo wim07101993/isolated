@@ -1,0 +1,17 @@
+name: isolated
+description:
+  This package provides functionality to easily use isolates.
+version: 0.0.1
+repository: https://github.com/wim07101993/isolated
+
+environment:
+  sdk: '>=2.14.4 <3.0.0'
+
+dependencies:
+  uuid: ^3.0.5
+
+dev_dependencies:
+  faker: ^2.0.0
+  lint: ^1.7.2
+  mocktail: ^0.2.0
+  test: ^1.19.3
