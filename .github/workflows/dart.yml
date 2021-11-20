@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@v1.3
       - name: Install dependencies
         run: dart pub get
 
@@ -22,12 +22,12 @@ jobs:
           test_coverage
                 
       - name: Check Code Coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v1
+        uses: VeryGoodOpenSource/very_good_coverage@v1.2.0
         with:
           min_coverage: 90
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v2.1.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -36,13 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@v1.3
       - name: Install dependencies
         run: |
           dart pub get
           dart pub global activate pana
-
-
       - name: Verify formatting
         run: dart format --set-exit-if-changed .
 
