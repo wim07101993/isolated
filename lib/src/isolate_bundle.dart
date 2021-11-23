@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'package:isolated/isolated.dart';
-
 import 'isolate_bundle_configuration.dart';
+import 'isolate_bundle_factory.dart';
 
 /// Wraps an isolate together with an id, config and channels to send and
 /// receive messages between them.
@@ -47,6 +46,9 @@ class IsolateBundle<TConfig extends IsolateBundleConfiguration, TSend,
   final Stream<TReceive> messages;
 
   /// Cancels the isolate bundle.
+  ///
+  /// [cancelMessage] can be used to give information about why the bundle
+  /// should be stopped.
   ///
   /// Stops listening to the ReceivePort from the isolate and sends the cancel
   /// signal through the SendPort.

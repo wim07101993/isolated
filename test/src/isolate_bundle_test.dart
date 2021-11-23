@@ -3,7 +3,6 @@ import 'dart:isolate';
 
 import 'package:faker/faker.dart';
 import 'package:isolated/isolated.dart';
-import 'package:isolated/src/isolate_bundle.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:isolated/isolated.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -16,9 +14,7 @@ void main() {
   setUp(() {
     toCaller = MockSendPort();
 
-    isolateBundleConfiguration = _IsolateBundleConfiguration(
-      toCaller: toCaller,
-    );
+    isolateBundleConfiguration = IsolateBundleConfiguration(toCaller);
   });
 
   group('activateOnCurrentIsolate', () {

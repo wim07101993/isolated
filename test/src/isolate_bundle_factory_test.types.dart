@@ -1,17 +1,10 @@
 part of 'isolate_bundle_factory_test.dart';
 
-class _IsolateBundleConfiguration extends IsolateBundleConfiguration {
-  const _IsolateBundleConfiguration(this.toCaller);
-
-  @override
-  final SendPort toCaller;
-}
-
 class _ConfigBuilder {
   const _ConfigBuilder();
 
-  _IsolateBundleConfiguration build(SendPort configSendPort) {
-    return _IsolateBundleConfiguration(configSendPort);
+  IsolateBundleConfiguration build(SendPort configSendPort) {
+    return IsolateBundleConfiguration(configSendPort);
   }
 }
 
