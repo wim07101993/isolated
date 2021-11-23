@@ -11,6 +11,7 @@ class _IsolateBundleConfiguration extends IsolateBundleConfiguration {
 
 class _MockListener extends Mock implements _Listener {}
 
-class _Listener {
-  void handler(dynamic message) {}
+abstract class _Listener {
+  void handler(dynamic message);
+  Future<void> cancel(CancelMessage message);
 }

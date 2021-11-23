@@ -20,3 +20,5 @@ class _Listener {
 }
 
 class _MockListener extends Mock implements _Listener {}
+
+class FakeIsolateBundleFactory extends Fake implements IsolateBundleFactory {}

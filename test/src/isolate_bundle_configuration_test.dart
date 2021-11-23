@@ -32,11 +32,16 @@ void main() {
       // act
       isolateBundleConfiguration.activateOnCurrentIsolate(
         mockListener.handler,
+        mockListener.cancel,
       );
       await Future.value(const Duration(milliseconds: 1));
 
       // assert
       verify(() => toCaller.send(any()));
+    });
+
+    test('should cancel subscriptions when [CancelMessage] is received', () {
+      // TODO test with multiple isolates
     });
   });
 }

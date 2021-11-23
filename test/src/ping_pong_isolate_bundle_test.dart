@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:faker/faker.dart';
 import 'package:isolated/isolated.dart';
@@ -12,48 +11,29 @@ part 'ping_pong_isolate_bundle_test.types.dart';
 
 void main() {
   // ignore: cancel_subscriptions
-  late StreamSubscription mockListeningSubscription;
-  // ignore: cancel_subscriptions
   late StreamSubscription<PingPongMessage> mockMessagesSubscription;
-  late String fakeId;
-  late Isolate mockIsolate;
-  late IsolateBundleConfiguration mockConfig;
+  late MockIsolateBundle<IsolateBundleConfiguration, PingPongMessage,
+      PingPongMessage> mockIsolateBundle;
   late MockSender mockSender;
   late Stream<PingPongMessage> mockMessages;
 
   late PingPongIsolateBundle isolateBundle;
 
+  setUpAll(() {
+    registerFallbackValue(const CancelMessage());
+  });
+
   setUp(() {
-    mockListeningSubscription = MockStreamSubscription();
     mockMessagesSubscription = MockStreamSubscription();
-    fakeId = faker.guid.guid();
-    mockIsolate = MockIsolate();
-    mockConfig = MockIsolateBundleConfiguration();
+    mockIsolateBundle = MockIsolateBundle();
     mockSender = MockSender();
     mockMessages = MockStream();
 
     when(() => mockMessages.listen(any())).thenReturn(mockMessagesSubscription);
+    when(() => mockIsolateBundle.messages).thenAnswer((i) => mockMessages);
+    when(() => mockIsolateBundle.send).thenReturn(mockSender.send);
 
-    isolateBundle = PingPongIsolateBundle(
-      listeningSubscription: mockListeningSubscription,
-      id: fakeId,
-      isolate: mockIsolate,
-      config: mockConfig,
-      send: mockSender.send,
-      messages: mockMessages,
-    );
-  });
-
-  group('constructor', () {
-    test('should set all fields', () {
-      // assert
-      // assert
-      expect(isolateBundle.id, fakeId);
-      expect(isolateBundle.isolate, mockIsolate);
-      expect(isolateBundle.config, mockConfig);
-      expect(isolateBundle.send, mockSender.send);
-      expect(isolateBundle.messages, mockMessages);
-    });
+    isolateBundle = PingPongIsolateBundle(mockIsolateBundle);
   });
 
   group('pingPong', () {
@@ -65,14 +45,10 @@ void main() {
       messagesController = StreamController();
       fakePing = faker.lorem.sentence();
 
-      isolateBundle = PingPongIsolateBundle(
-        listeningSubscription: mockListeningSubscription,
-        id: fakeId,
-        isolate: mockIsolate,
-        config: mockConfig,
-        send: mockSender.send,
-        messages: messagesController.stream,
-      );
+      when(() => mockIsolateBundle.messages)
+          .thenAnswer((i) => messagesController.stream);
+
+      isolateBundle = PingPongIsolateBundle(mockIsolateBundle);
     });
 
     test('should send ping the isolate and wait for response', () async {
@@ -109,18 +85,26 @@ void main() {
   });
 
   group('close', () {
+    late CancelMessage fakeCancelMessage;
+
+    setUp(() {
+      fakeCancelMessage = const CancelMessage();
+    });
+
     test('should cancel listening subscription', () async {
       // assert
-      when(() => mockListeningSubscription.cancel())
-          .thenAnswer((i) => Future.value());
+      final mockCanceler = MockCanceler();
+      when(() => mockCanceler.cancel(any())).thenAnswer((i) => Future.value());
+      when(() => mockIsolateBundle.cancel)
+          .thenAnswer((i) => mockCanceler.cancel);
       when(() => mockMessagesSubscription.cancel())
           .thenAnswer((i) => Future.value());
 
       // act
-      await isolateBundle.close();
+      await isolateBundle.cancel(fakeCancelMessage);
 
       // assert
-      verify(() => mockListeningSubscription.cancel());
+      verify(() => mockCanceler.cancel(fakeCancelMessage));
       verify(() => mockMessagesSubscription.cancel());
     });
   });

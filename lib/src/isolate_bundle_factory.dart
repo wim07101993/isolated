@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:isolated/isolated.dart';
 import 'package:uuid/uuid.dart';
 
 import 'isolate_bundle.dart';
@@ -51,12 +52,40 @@ class IsolateBundleFactory {
 
     final toIsolatePort = await toIsolateCompleter.future;
     return IsolateBundle(
-      listeningSubscription: subscription,
       id: id,
       isolate: isolate,
       config: config,
       send: toIsolatePort.send,
       messages: fromIsolateStreamController.stream,
+      cancel: (cancelMessage) async {
+        await subscription.cancel();
+        toIsolatePort.send(cancelMessage);
+      },
     );
   }
+
+  Future<PingPongIsolateBundle<TConfig, TSend, TReceive>> startNewPingPong<
+      TConfig extends IsolateBundleConfiguration, TSend, TReceive>(
+    void Function(TConfig message) entryPoint,
+    TConfig Function(SendPort toCaller) configBuilder, {
+    bool paused = false,
+    bool errorsAreFatal = true,
+    SendPort? onExit,
+    SendPort? onError,
+    String? name,
+  }) async {
+    return startNew<TConfig, PingPongMessage<TSend>, PingPongMessage<TReceive>>(
+      entryPoint,
+      configBuilder,
+      paused: paused,
+      errorsAreFatal: errorsAreFatal,
+      onExit: onExit,
+      onError: onError,
+      name: name,
+    ).then((isolateBundle) => PingPongIsolateBundle(isolateBundle));
+  }
+}
+
+class CancelMessage {
+  const CancelMessage();
 }

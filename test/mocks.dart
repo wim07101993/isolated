@@ -16,3 +16,6 @@ class MockReceivePort extends Mock implements ReceivePort {}
 class MockStreamSubscription<T> extends Mock implements StreamSubscription<T> {}
 
 class MockStream<T> extends Mock implements Stream<T> {}
+
+class MockIsolateBundle<TConfig extends IsolateBundleConfiguration, TSend,
+    TReceive> extends Mock implements IsolateBundle<TConfig, TSend, TReceive> {}

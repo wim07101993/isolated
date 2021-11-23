@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'isolate_bundle.dart';
 import 'isolate_bundle_configuration.dart';
@@ -12,36 +11,23 @@ class PingPongMessage<T> {
   final T value;
 }
 
-class PingPongIsolateBundle<TSend, TReceive,
-        TConfig extends IsolateBundleConfiguration>
-    extends IsolateBundle<TConfig, PingPongMessage<TSend>,
-        PingPongMessage<TReceive>> {
-  PingPongIsolateBundle({
-    required StreamSubscription listeningSubscription,
-    required String id,
-    required Isolate isolate,
-    required TConfig config,
-    required void Function(PingPongMessage<TSend> message) send,
-    required Stream<PingPongMessage<TReceive>> messages,
-  }) : super(
-          listeningSubscription: listeningSubscription,
-          id: id,
-          isolate: isolate,
-          config: config,
-          send: send,
-          messages: messages,
-        ) {
-    subscription = messages.listen(_onReceiveFromIsolate);
+class PingPongIsolateBundle<TConfig extends IsolateBundleConfiguration, TSend,
+    TReceive> {
+  PingPongIsolateBundle(this._isolateBundle) {
+    _subscription = _isolateBundle.messages.listen(_onReceiveFromIsolate);
   }
 
-  late final StreamSubscription subscription;
+  final IsolateBundle<TConfig, PingPongMessage<TSend>,
+      PingPongMessage<TReceive>> _isolateBundle;
+
+  late final StreamSubscription _subscription;
   final _callCompleters = <String, Completer<TReceive>>{};
 
   Future<TReceive> pingPong(TSend ping) async {
     final id = uuid.v1();
     final completer = Completer<TReceive>();
     _callCompleters[id] = completer;
-    send(PingPongMessage(id, ping));
+    _isolateBundle.send(PingPongMessage(id, ping));
     final pong = await completer.future;
     _callCompleters.remove(id);
     return pong;
@@ -55,9 +41,8 @@ class PingPongIsolateBundle<TSend, TReceive,
     }
   }
 
-  @override
-  Future<void> close() async {
-    await super.close();
-    await subscription.cancel();
+  Future<void> cancel(CancelMessage cancelMessage) async {
+    await _isolateBundle.cancel(cancelMessage);
+    await _subscription.cancel();
   }
 }

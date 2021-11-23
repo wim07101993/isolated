@@ -8,9 +8,10 @@ import 'package:test/test.dart';
 part 'isolate_bundle_factory_test.types.dart';
 
 void entryPoint(IsolateBundleConfiguration config) {
-  config.activateOnCurrentIsolate((message) {
-    config.toCaller.send(message);
-  });
+  config.activateOnCurrentIsolate(
+    config.toCaller.send,
+    config.toCaller.send,
+  );
 }
 
 void main() {
@@ -41,6 +42,26 @@ void main() {
       // assert
       verify(() => mockListener.listen(value1));
       verify(() => mockListener.listen(value2));
+
+      // cleanup
+      subscription.cancel();
+    });
+
+    test('should cancel subscription and if cancel of bundle is called',
+        () async {
+      // arrange
+      final mockListener = _MockListener();
+      final bundle = await factory.startNew(entryPoint, configBuilder.build);
+      final value1 = faker.lorem.sentence();
+      final subscription = bundle.messages.listen(mockListener.listen);
+
+      // act
+      await bundle.cancel(const CancelMessage());
+      bundle.send(value1);
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      // assert
+      verifyNever(() => mockListener.listen(value1));
 
       // cleanup
       subscription.cancel();
