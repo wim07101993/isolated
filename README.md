@@ -1,39 +1,61 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Isolated
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Provides functionality to easily
+use [Isolates](https://api.dart.dev/stable/2.14.4/dart-isolate/Isolate-class.html)
+.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### `IsolateBundle`
 
-## Getting started
+An `IsolateBundle` wraps an `Isolate` together with a send-function and a 
+message-stream. This bundle can be generated with the `IsolateBundleFactory`.
+This factory handles te configuration of the `SendPort` and `ReceivePort` as 
+well as the cleanup afterwards.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+### `PingPongIsolateBundle`
+
+This is an `IsolateBundle` which implements a request-response pattern. The 
+bundle can be used to send a message to the `Isolate`, which will handle the 
+message. When the `Isolate` is ready it will respond back to the calling 
+`Isolate` and the `pingPong` function will return.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+1. Create a top-level or static function which will handle the computation. 
+**The `config.activateOnCurrentIsolate` must be called to in order to configure
+the `Isolate` correctly.**
 
 ```dart
-const like = 'sample';
+void deserialize(IsolateBundleConfiguration config) {
+  config.activateOnCurrentIsolate<PingPongMessage<String>>(
+        (message) {
+      config.toCaller.send(PingPongMessage<dynamic>(
+        message.id,
+        jsonDecode(message.value),
+      ));
+    },
+    (cancelMessage) {},
+  );
+}
+
+```
+2. Create a bundle with the `IsolateBundleFactory`
+
+```dart
+final bundle = await factory
+    .startNewPingPong<IsolateBundleConfiguration, String, dynamic>(
+  deserialize,
+  (toCaller) => IsolateBundleConfiguration(toCaller),
+);
 ```
 
-## Additional information
+2. Send a message to the `Isolate`
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+final deserialized = await bundle.pingPong('{"Property": "Hello world"}');
+```
+
+3. The computed value will be returned.
+
+The complete code example can be found in the [example folder](https://github.com/wim07101993/isolated/blob/master/example/main.dart).

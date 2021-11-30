@@ -60,6 +60,9 @@ class IsolateBundleFactory {
         toIsolateCompleter.complete(toIsolate);
       } else if (message is TReceive) {
         fromIsolateStreamController.add(message);
+      } else {
+        throw Exception(
+            'Received message $message of type ${message.runtimeType} while expecting $TReceive');
       }
     });
 

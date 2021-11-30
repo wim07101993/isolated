@@ -1,31 +1,30 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:isolated/isolated.dart';
 
 const factory = IsolateBundleFactory();
 
 Future<void> main() async {
-  log('Start');
   final bundle = await factory
-      .startNewPingPong<IsolateBundleConfiguration, String, Object>(
+      .startNewPingPong<IsolateBundleConfiguration, String, dynamic>(
     deserialize,
     (toCaller) => IsolateBundleConfiguration(toCaller),
   );
 
   final deserialized = await bundle.pingPong('{"Property": "Hello world"}');
-  log(deserialized.toString());
+  // ignore:avoid_print
+  print(deserialized.toString());
+  bundle.cancel();
 }
 
 void deserialize(IsolateBundleConfiguration config) {
   config.activateOnCurrentIsolate<PingPongMessage<String>>(
     (message) {
-      config.toCaller.send(PingPongMessage(
+      config.toCaller.send(PingPongMessage<dynamic>(
         message.id,
         jsonDecode(message.value),
       ));
     },
     (cancelMessage) {},
   );
-  log('here');
 }

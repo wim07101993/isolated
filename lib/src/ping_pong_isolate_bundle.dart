@@ -81,7 +81,9 @@ class PingPongIsolateBundle<TConfig extends IsolateBundleConfiguration, TSend,
   ///
   /// Stops listening to the ReceivePort from the isolate and sends the cancel
   /// signal through the SendPort.
-  Future<void> cancel(CancelMessage cancelMessage) async {
+  Future<void> cancel([
+    CancelMessage cancelMessage = const CancelMessage(),
+  ]) async {
     await _isolateBundle.cancel(cancelMessage);
     await _subscription.cancel();
   }

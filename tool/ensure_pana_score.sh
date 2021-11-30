@@ -16,11 +16,9 @@ IFS='/'
 read -r -a SCORE_ARR <<<"$PANA_SCORE"
 SCORE=SCORE_ARR[0]
 TOTAL=SCORE_ARR[1]
-if [ -z "$1" ]; then
-  MINIMUM_SCORE=TOTAL
-else
-  MINIMUM_SCORE=$1
-fi
+
+# For this package we only need a score of 110 since isolates are not available for web
+MINIMUM_SCORE=110
 if ((SCORE < MINIMUM_SCORE)); then
   echo "minimum score $MINIMUM_SCORE was not met!"
   exit 1

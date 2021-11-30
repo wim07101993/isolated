@@ -35,9 +35,5 @@ void main() {
       // assert
       verify(() => toCaller.send(any()));
     });
-
-    test('should cancel subscriptions when [CancelMessage] is received', () {
-      // TODO test with multiple isolates
-    });
   });
 }
