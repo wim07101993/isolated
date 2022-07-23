@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:isolated/src/isolate_bundle.dart';
+import 'package:isolated/src/isolate_bundle_configuration.dart';
+import 'package:isolated/src/ping_pong_isolate_bundle.dart';
 import 'package:uuid/uuid.dart';
-
-import 'isolate_bundle.dart';
-import 'isolate_bundle_configuration.dart';
-import 'ping_pong_isolate_bundle.dart';
 
 /// Global instance of [Uuid].
 ///

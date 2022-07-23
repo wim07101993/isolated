@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'isolate_bundle.dart';
-import 'isolate_bundle_configuration.dart';
-import 'isolate_bundle_factory.dart';
+import 'package:isolated/src/isolate_bundle.dart';
+import 'package:isolated/src/isolate_bundle_configuration.dart';
+import 'package:isolated/src/isolate_bundle_factory.dart';
 
 /// Base message for a [PingPongIsolateBundle].
 ///

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'isolate_bundle_factory.dart';
+import 'package:isolated/src/isolate_bundle_factory.dart';
 
 /// Base configuration for creating an isolate bundle.
 ///

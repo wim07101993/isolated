@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:isolate';
 
-import 'isolate_bundle_configuration.dart';
-import 'isolate_bundle_factory.dart';
+import 'package:isolated/src/isolate_bundle_configuration.dart';
+import 'package:isolated/src/isolate_bundle_factory.dart';
 
 /// Wraps an isolate together with an id, config and channels to send and
 /// receive messages between them.
