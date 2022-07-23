@@ -1,7 +1,7 @@
 name: isolated
 description:
   This package provides functionality to easily use isolates like automatically setting up the bidirectional communication and request-response functionality.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/wim07101993/isolated
 
 environment:
