@@ -4,8 +4,6 @@ import 'dart:isolate';
 import 'package:isolated/isolated.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIsolate extends Mock implements Isolate {}
-
 class MockIsolateBundleConfiguration extends Mock
     implements IsolateBundleConfiguration {}
 

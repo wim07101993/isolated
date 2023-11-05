@@ -1,3 +1,7 @@
+## 1.0.0
+
+- feat!: upgrade to dart v3
+
 ## 0.0.1
 
 - Initial version.

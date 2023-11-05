@@ -1,3 +1,4 @@
+/// A structured way to manage messages between isolates
 library isolated;
 
 export 'src/isolate_bundle.dart';

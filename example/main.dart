@@ -13,7 +13,7 @@ Future<void> main() async {
 
   final deserialized = await bundle.pingPong('{"Property": "Hello world"}');
   // ignore:avoid_print
-  print(deserialized.toString());
+  print(deserialized);
   bundle.cancel();
 }
 
