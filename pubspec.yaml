@@ -1,17 +1,17 @@
 name: isolated
 description:
   This package provides functionality to easily use isolates like automatically setting up the bidirectional communication and request-response functionality.
-version: 0.0.2
+version: 1.0.0
 repository: https://github.com/wim07101993/isolated
 
 environment:
-  sdk: '>=2.14.4 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  uuid: ">=3.0.0 <4.0.0"
+  uuid: ">=4.0.0 <5.0.0"
 
 dev_dependencies:
   faker: ">=2.0.0 <3.0.0"
   lint: 
-  mocktail: ">0.0.0 <1.0.0"
+  mocktail: ">=1.0.0 <2.0.0"
   test: ">=1.0.0 <2.0.0"
